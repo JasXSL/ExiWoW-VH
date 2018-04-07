@@ -1,0 +1,6 @@
+## Interface: 70300
+## Title: ExiWoW VibHub
+## Notes: VibHub Connector for ExiWoW 
+## Version: 0.0.1
+
+index.lua
