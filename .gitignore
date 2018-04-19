@@ -1,0 +1,6 @@
+
+.gitattributes
+build/
+*.pyc
+*.7z
+Python/conf.json

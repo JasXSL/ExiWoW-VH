@@ -21,6 +21,7 @@ VH.programs = {
 	IDLE_OOZE = 9,
 	PULSATING_MUSHROOM = 10,
 	PULSATING_MUSHROOM_SMALL = 11,
+	SHARAS_FEL_ROD = 12,
 }
 
 -- Timeouts for temporary effects
@@ -54,21 +55,29 @@ function VH:ini()
 
 	VH:toggleProgram(VH.programs.MAX_AROUSAL, ExiWoW.ME.excitement >= 1)
 
-	ExiWoW.Event:on(ExiWoW.Event.Types.EXADD, function()
+	ExiWoW.Event:on(ExiWoW.Event.Types.EXADD, function(data)
 		VH:toggleProgram(VH.programs.MAX_AROUSAL, ExiWoW.ME.excitement >= 1)
 	end)
 
-	ExiWoW.Event:on(ExiWoW.Event.Types.EXADD_DEFAULT, function()
-		VH:addTempProgram(VH.programs.AROUSAL_RECEIVE_SMALL, 0.25)
+	ExiWoW.Event:on(ExiWoW.Event.Types.EXADD_DEFAULT, function(data)
+		if data.vh then
+			VH:addTempProgram(VH.programs.AROUSAL_RECEIVE_SMALL, 0.25)
+		end
 	end)
-	ExiWoW.Event:on(ExiWoW.Event.Types.EXADD_CRIT, function()
-		VH:addTempProgram(VH.programs.AROUSAL_RECEIVE_LARGE, 1)
+	ExiWoW.Event:on(ExiWoW.Event.Types.EXADD_CRIT, function(data)
+		if data.vh then
+			VH:addTempProgram(VH.programs.AROUSAL_RECEIVE_LARGE, 1)
+		end
 	end)
-	ExiWoW.Event:on(ExiWoW.Event.Types.EXADD_M_DEFAULT, function()
-		VH:addTempProgram(VH.programs.PAIN_RECEIVE_SMALL, 0.5)
+	ExiWoW.Event:on(ExiWoW.Event.Types.EXADD_M_DEFAULT, function(data)
+		if data.vh then
+			VH:addTempProgram(VH.programs.PAIN_RECEIVE_SMALL, 0.5)
+		end
 	end)
-	ExiWoW.Event:on(ExiWoW.Event.Types.EXADD_M_CRIT, function()
-		VH:addTempProgram(VH.programs.PAIN_RECEIVE_LARGE, 1)
+	ExiWoW.Event:on(ExiWoW.Event.Types.EXADD_M_CRIT, function(data)
+		if data.vh then
+			VH:addTempProgram(VH.programs.PAIN_RECEIVE_LARGE, 1)
+		end
 	end)
 	
 	

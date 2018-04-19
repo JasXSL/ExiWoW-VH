@@ -1,6 +1,10 @@
 # Websocket handler
 from socketIO_client_nexus import SocketIO, LoggingNamespace
 import threading, json, math
+import numbers, decimal
+
+def dummyOnConnection():
+    print("onConnection not overwritten")
 
 class vhSockets:
     devices = []
@@ -9,7 +13,8 @@ class vhSockets:
     socketIO = None
 
     #bindable events
-    onConnection = None # bool connected
+    
+    onConnection = dummyOnConnection # bool connected
     
     def init(self, win):
 
@@ -42,8 +47,14 @@ class vhSockets:
             obj = {}
             for k, v in stage.items():
                 obj[k] = v
-            if "i" in obj and obj["i"] > 0:
-                obj["i"] = math.floor(minval+((maxval-minval)*(obj["i"]/255)))
+            if "i" in obj:
+                if type(obj["i"]) is int:
+                    obj["i"] = math.floor(minval+((maxval-minval)*(obj["i"]/255)))
+                elif type(obj["i"]) is not bool:
+                    if "min" in obj["i"]:
+                        obj["i"]["min"] = math.floor(minval+((maxval-minval)*(obj["i"]["min"]/255)))
+                    if "max" in obj["i"]:
+                        obj["i"]["max"] = math.floor(minval+((maxval-minval)*(obj["i"]["max"]/255)))
             out.append(obj)
 
         program = {
