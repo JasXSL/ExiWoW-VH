@@ -1,5 +1,10 @@
 local aName, aTable = ...;
 local frame = CreateFrame("Frame",nil);
+local require = ExiWoW.require;
+
+local Event = require("Event");
+local Timer = require("Timer");
+
 frame:RegisterEvent("ADDON_LOADED");
 local INI = false
 
@@ -22,6 +27,7 @@ VH.programs = {
 	PULSATING_MUSHROOM = 10,
 	PULSATING_MUSHROOM_SMALL = 11,
 	SHARAS_FEL_ROD = 12,
+	SHATTERING_SONG = 13,
 }
 
 -- Timeouts for temporary effects
@@ -55,26 +61,26 @@ function VH:ini()
 
 	VH:toggleProgram(VH.programs.MAX_AROUSAL, ExiWoW.ME.excitement >= 1)
 
-	ExiWoW.Event:on(ExiWoW.Event.Types.EXADD, function(data)
+	Event.on(Event.Types.EXADD, function(data)
 		VH:toggleProgram(VH.programs.MAX_AROUSAL, ExiWoW.ME.excitement >= 1)
 	end)
 
-	ExiWoW.Event:on(ExiWoW.Event.Types.EXADD_DEFAULT, function(data)
+	Event.on(Event.Types.EXADD_DEFAULT, function(data)
 		if data.vh then
 			VH:addTempProgram(VH.programs.AROUSAL_RECEIVE_SMALL, 0.25)
 		end
 	end)
-	ExiWoW.Event:on(ExiWoW.Event.Types.EXADD_CRIT, function(data)
+	Event.on(Event.Types.EXADD_CRIT, function(data)
 		if data.vh then
 			VH:addTempProgram(VH.programs.AROUSAL_RECEIVE_LARGE, 1)
 		end
 	end)
-	ExiWoW.Event:on(ExiWoW.Event.Types.EXADD_M_DEFAULT, function(data)
+	Event.on(Event.Types.EXADD_M_DEFAULT, function(data)
 		if data.vh then
 			VH:addTempProgram(VH.programs.PAIN_RECEIVE_SMALL, 0.5)
 		end
 	end)
-	ExiWoW.Event:on(ExiWoW.Event.Types.EXADD_M_CRIT, function(data)
+	Event.on(Event.Types.EXADD_M_CRIT, function(data)
 		if data.vh then
 			VH:addTempProgram(VH.programs.PAIN_RECEIVE_LARGE, 1)
 		end
@@ -86,10 +92,9 @@ end
 
 -- Use false duration to turn off
 function VH:addTempProgram(program, duration)
-	local t = ExiWoW.Timer;
-	t:clear(VH.timeouts[program])
+	Timer.clear(VH.timeouts[program])
 	if type(duration) == "number" and duration > 0 then
-		VH.timeouts[program] = t:set(function()
+		VH.timeouts[program] = Timer.set(function()
 			VH:toggleProgram(program, false)
 		end, duration)
 		VH:toggleProgram(program, true)
