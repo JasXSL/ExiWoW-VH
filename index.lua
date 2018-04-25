@@ -28,6 +28,8 @@ VH.programs = {
 	PULSATING_MUSHROOM_SMALL = 11,
 	SHARAS_FEL_ROD = 12,
 	SHATTERING_SONG = 13,
+	PULSATING_MANA_GEM = 14,
+	PULSATING_MANA_GEM_NIGHTBORNE = 15,
 }
 
 -- Timeouts for temporary effects
@@ -59,30 +61,30 @@ function VH:ini()
 	box.bg:SetAllPoints(true)
 	box.bg:SetColorTexture(0.0, 0.0, 0.0, 1)
 
-	VH:toggleProgram(VH.programs.MAX_AROUSAL, ExiWoW.ME.excitement >= 1)
+	VH.toggleProgram(VH.programs.MAX_AROUSAL, ExiWoW.ME.excitement >= 1)
 
 	Event.on(Event.Types.EXADD, function(data)
-		VH:toggleProgram(VH.programs.MAX_AROUSAL, ExiWoW.ME.excitement >= 1)
+		VH.toggleProgram(VH.programs.MAX_AROUSAL, ExiWoW.ME.excitement >= 1)
 	end)
 
 	Event.on(Event.Types.EXADD_DEFAULT, function(data)
 		if data.vh then
-			VH:addTempProgram(VH.programs.AROUSAL_RECEIVE_SMALL, 0.25)
+			VH.addTempProgram(VH.programs.AROUSAL_RECEIVE_SMALL, 0.25)
 		end
 	end)
 	Event.on(Event.Types.EXADD_CRIT, function(data)
 		if data.vh then
-			VH:addTempProgram(VH.programs.AROUSAL_RECEIVE_LARGE, 1)
+			VH.addTempProgram(VH.programs.AROUSAL_RECEIVE_LARGE, 1)
 		end
 	end)
 	Event.on(Event.Types.EXADD_M_DEFAULT, function(data)
 		if data.vh then
-			VH:addTempProgram(VH.programs.PAIN_RECEIVE_SMALL, 0.5)
+			VH.addTempProgram(VH.programs.PAIN_RECEIVE_SMALL, 0.5)
 		end
 	end)
 	Event.on(Event.Types.EXADD_M_CRIT, function(data)
 		if data.vh then
-			VH:addTempProgram(VH.programs.PAIN_RECEIVE_LARGE, 1)
+			VH.addTempProgram(VH.programs.PAIN_RECEIVE_LARGE, 1)
 		end
 	end)
 	
@@ -91,21 +93,21 @@ function VH:ini()
 end
 
 -- Use false duration to turn off
-function VH:addTempProgram(program, duration)
+function VH.addTempProgram(program, duration)
 	Timer.clear(VH.timeouts[program])
 	if type(duration) == "number" and duration > 0 then
 		VH.timeouts[program] = Timer.set(function()
-			VH:toggleProgram(program, false)
+			VH.toggleProgram(program, false)
 		end, duration)
-		VH:toggleProgram(program, true)
+		VH.toggleProgram(program, true)
 	else
-		VH:toggleProgram(program, false)
+		VH.toggleProgram(program, false)
 	end
 end
 
 
 
-function VH:output()
+function VH.output()
 
 	local programs = {}
 	for p,t in pairs(VH.active_programs) do
@@ -137,8 +139,8 @@ function VH:toggleMaxArousal(on)
 	VH:output();
 end
 
--- /run ExiWoW.VH:toggleProgram(1, true)
-function VH:toggleProgram(program, enabled)
+-- /run ExiWoW.VH.toggleProgram(1, true)
+function VH.toggleProgram(program, enabled)
 	local active = VH.active_programs;
 	if not enabled then enabled = nil 
 	else enabled = GetTime() end

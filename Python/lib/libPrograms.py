@@ -130,4 +130,16 @@ out = [
 		{},
 		{"i":150,"d":150}
 	],
+	#14 = PULSATING_MANA_GEM
+	[
+		-1,
+		{},
+		{"i":100,"d":500,"e":"Sinusoidal.In"}
+	],
+	#15 = PULSATING_MANA_GEM_NIGHTBORNE
+	[
+		-1,
+		{},
+		{"i":255,"d":250,"e":"Sinusoidal.In"}
+	],
 ]
