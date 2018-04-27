@@ -30,6 +30,7 @@ VH.programs = {
 	SHATTERING_SONG = 13,
 	PULSATING_MANA_GEM = 14,
 	PULSATING_MANA_GEM_NIGHTBORNE = 15,
+	SMALL_TICKLE_RANDOM = 16
 }
 
 -- Timeouts for temporary effects

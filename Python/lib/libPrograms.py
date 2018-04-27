@@ -142,4 +142,13 @@ out = [
 		{},
 		{"i":255,"d":250,"e":"Sinusoidal.In"}
 	],
+	#16 = SMALL_TICKLE_RANDOM
+	[
+		-1,
+		{},
+		{"i":{"min":20,"max":80}},
+		{"i":False,"d":{"min":50,"max":200}},
+		{},
+		{"d":{"min":50,"max":200}}
+	],
 ]
