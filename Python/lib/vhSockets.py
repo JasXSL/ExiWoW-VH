@@ -62,7 +62,8 @@ class vhSockets:
             "type" : "vib",
             "data" : {
                 "stages" : out,
-                "repeats" : repeats
+                "repeats" : repeats,
+                "port" : 1
             }
         }
         self.socketIO.emit('GET', program)
