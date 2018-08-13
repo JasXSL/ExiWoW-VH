@@ -41,11 +41,11 @@ class vhWindows:
     def processScan(self):
         #Scan for WoW
         if not self.wowPid:
-            cmd = 'WMIC PROCESS where "name=\'Wow-64.exe\'" get Caption,Processid'
+            cmd = 'WMIC PROCESS where "name=\'Wow-64.exe\' or name=\'Wow.exe\'" get Caption,Processid'
             proc = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE)
             for line in proc.stdout:
                 spl = line.split()
-                if len(spl) > 1 and spl[0] == b'Wow-64.exe':
+                if len(spl) > 1 and (spl[0] == b'Wow-64.exe' or spl[0] == b'Wow.exe'):
                     self.wowPid = int(spl[1])
                     if self.onWowStatus:
                         self.onWowStatus(True)

@@ -5,6 +5,7 @@ local require = ExiWoW.require;
 local Event = require("Event");
 local Timer = require("Timer");
 
+
 frame:RegisterEvent("ADDON_LOADED");
 local INI = false
 
@@ -52,10 +53,16 @@ frame:SetScript("OnEvent", function(self, event, prefix, message, channel, sende
 		end
 
 	end
+
+
 end)
 
 function VH:ini()
 	
+	if globalStorage.enabled == nil then
+		globalStorage.enabled = true;
+	end
+
 	local box = CreateFrame("Frame", "VibHubConnector", UIParent);
 	VH.outputBox = box;
 	box:SetSize(5,5)
@@ -76,23 +83,56 @@ function VH:ini()
 			VH.addTempProgram(VH.programs.AROUSAL_RECEIVE_SMALL, 0.25)
 		end
 	end)
+
 	Event.on(Event.Types.EXADD_CRIT, function(data)
 		if data.vh then
 			VH.addTempProgram(VH.programs.AROUSAL_RECEIVE_LARGE, 1)
 		end
 	end)
+
 	Event.on(Event.Types.EXADD_M_DEFAULT, function(data)
 		if data.vh then
 			VH.addTempProgram(VH.programs.PAIN_RECEIVE_SMALL, 0.5)
 		end
 	end)
+
 	Event.on(Event.Types.EXADD_M_CRIT, function(data)
 		if data.vh then
 			VH.addTempProgram(VH.programs.PAIN_RECEIVE_LARGE, 1)
 		end
 	end)
 	
-	
+	VH:settingsBuild();
+
+	if not globalStorage.enabled then
+		return;
+	end
+	-- Check cvars
+	local cvars = {
+		["Gamma"]=1.0000, 
+		["Contrast"]=50.0000, 
+		["Brightness"]=50.0000
+	};
+	for k,v in pairs(cvars) do
+		if tonumber(GetCVar(k)) ~= v then
+			StaticPopupDialogs["VH_ERROR"] = {
+				text = "VibHub connector only works with default gamma/brightness/contrast. Want to reset these?",
+				button1 = "Reset",
+				button2 = "Ignore",
+				OnAccept = function()
+					for ck,cv in pairs(cvars) do
+						SetCVar(ck,cv);
+					end
+				end,
+				timeout = 0,
+				whileDead = true,
+				hideOnEscape = true,
+				preferredIndex = 3,  -- avoid some UI taint, see http://www.wowace.com/announcements/how-to-avoid-some-ui-taint/
+			};
+			StaticPopup_Show("VH_ERROR");
+			break;
+		end
+	end
 
 end
 
@@ -113,10 +153,17 @@ end
 
 function VH.output()
 
+	if globalStorage.enabled then
+		VH.outputBox:Show();
+	else
+		VH.outputBox:Hide();
+	end
+
 	local programs = {}
 	for p,t in pairs(VH.active_programs) do
 		table.insert(programs, {p=p,t=t})
 	end
+
 	table.sort(programs, function(a, b)
 		-- Max arousal program gets bottom priority
 		if a.p == VH.programs.MAX_AROUSAL then 
@@ -124,7 +171,9 @@ function VH.output()
 		elseif b.p == VH.programs.MAX_AROUSAL then 
 			return true
 		end
-		if a.t > b.t then return true end
+		if a.t > b.t then 
+			return true 
+		end
 		return false
 	end)
 
@@ -145,11 +194,70 @@ end
 
 -- /run ExiWoW.VH.toggleProgram(1, true)
 function VH.toggleProgram(program, enabled)
+
 	local active = VH.active_programs;
-	if not enabled then enabled = nil 
+	if not enabled then 
+		enabled = nil ;
 	else enabled = GetTime() end
-	if type(program) ~= "number" then return false end
-	active[program] = enabled
+	if type(program) ~= "number" then 
+		return false ;
+	end
+	active[program] = enabled;
 	VH:output();
+
 end
+
+
+function VH.settingsBuild()
+	--if true then return end
+	local panel = CreateFrame("Frame", aName.."_globalConf", UIParent);
+	panel.name = "ExiWoW-VH";
+	InterfaceOptions_AddCategory(panel);
+
+	local gPadding = 30;
+	local gBottom = 40;
+
+	-- Create the buttons
+	local function createCheckbutton(suffix, parent, attach, x_loc, y_loc, displayname, tooltip)
+		local checkbutton = CreateFrame("CheckButton", aName .. "_globalConf_"..suffix, parent, "ChatConfigCheckButtonTemplate");
+		checkbutton.tooltip = tooltip;
+		checkbutton:SetPoint(attach, x_loc, y_loc);
+		getglobal(checkbutton:GetName() .. 'Text'):SetText(displayname);
+		return checkbutton;
+	end
+
+	local n = 0;
+	createCheckbutton("enable", panel, "TOPLEFT", gPadding,-gPadding-gBottom*n, "Enable", "Enables the VibHub Connector");
+	n = n+1;
+	--createCheckbutton("separate_ports", panel, "TOPLEFT", gPadding,-gPadding-gBottom*n, "Separate Ports", "Separates the VibHub ports (1=Groin, 2=Rear, 3=Chest). Otherwise all programs will run on all ports.");
+			
+	panel.okay = function (self) 
+
+		local gs = globalStorage;
+		local prefix = aName.."_globalConf_";
+		gs.enabled = getglobal(prefix.."enable"):GetChecked();
+		--gs.separate_ports = getglobal(prefix.."separate_ports"):GetValue();
+		VH.output();
+
+	end;
+	panel.cancel = function(self) 
+		VH.settingsUpdate(); 
+	end
+
+	VH.settingsUpdate();
+
+end
+
+function VH.settingsUpdate()
+	--if true then return end
+	local gs = globalStorage;
+	local prefix = aName.."_globalConf_";
+	getglobal(prefix.."enable"):SetChecked(gs.enabled);
+	--getglobal(prefix.."separate_ports"):SetValue(gs.separate_ports);
+
+	
+
+end
+
+
 
