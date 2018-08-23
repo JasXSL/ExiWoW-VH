@@ -140,9 +140,11 @@ end
 function VH.addTempProgram(program, duration)
 	Timer.clear(VH.timeouts[program])
 	if type(duration) == "number" and duration > 0 then
-		VH.timeouts[program] = Timer.set(function()
-			VH.toggleProgram(program, false)
-		end, duration)
+		if duration < math.huge then
+			VH.timeouts[program] = Timer.set(function()
+				VH.toggleProgram(program, false)
+			end, duration)
+		end
 		VH.toggleProgram(program, true)
 	else
 		VH.toggleProgram(program, false)
