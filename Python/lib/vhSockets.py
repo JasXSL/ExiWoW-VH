@@ -63,7 +63,7 @@ class vhSockets:
             "data" : {
                 "stages" : out,
                 "repeats" : repeats,
-                "port" : 1
+                "port" : 0
             }
         }
         self.socketIO.emit('GET', program)

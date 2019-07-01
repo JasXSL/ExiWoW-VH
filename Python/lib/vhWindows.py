@@ -35,7 +35,7 @@ class vhWindows:
         self.r = parse & 0xFF
         self.g = (parse >> 8) & 0xFF
         self.b = (parse >> 16) & 0xFF
-        #print("Parse at ", self.cursor["x"], self.cursor["y"], parse)
+        #print("Parse at ", self.cursor["x"], self.cursor["y"], "=", self.r, self.g, self.b)
 
     # Checks if WoW is running or not
     def processScan(self):

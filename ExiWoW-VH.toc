@@ -1,4 +1,4 @@
-## Interface: 80000
+## Interface: 80200
 ## Title: ExiWoW VibHub
 ## Notes: VibHub Connector for ExiWoW 
 ## Version: 0.1.0

@@ -12,12 +12,14 @@ class vhUI:
     onEvt = None
     wowRunning = None
     rangeMaxIntensity = None
-    rangeIntensityPerHp = None
     rangeMinIntensity = None
+    portBindings = None
+    
     #Weekaura button
     waButton = None
     
     def __init__(self):
+
         root = tk.Tk()
         root.title("WoW VibHub Connector")
         self.root = root
